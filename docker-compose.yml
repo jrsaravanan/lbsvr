@@ -1,0 +1,12 @@
+web:
+  build: .
+  links:
+   - db:db
+  ports:
+   - "9090:8080"
+  name: server
+db:
+  image: jrsaravanan/db
+  ports:
+   - "3306:3306"
+  name: db 
