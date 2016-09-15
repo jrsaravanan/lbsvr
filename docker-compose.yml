@@ -4,9 +4,11 @@ web:
    - db:db
   ports:
    - "9090:8080"
-  name: server
 db:
-  image: jrsaravanan/db
-  ports:
-   - "3306:3306"
-  name: db 
+ image: mysql:5.6
+ environment:
+   MYSQL_ROOT_PASSWORD: admin
+ ports:
+   - 3306:3306
+ volumes:
+   - ./db-dump:/docker-entrypoint-initdb.d

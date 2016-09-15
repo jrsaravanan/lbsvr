@@ -10,11 +10,15 @@ RUN apt-get -qq update && apt-get -qq -y install software-properties-common curl
 RUN /usr/bin/add-apt-repository ppa:webupd8team/java 2> /dev/null &&\
     apt-get update -qq
 
-# Accept oracle-java7 license
-RUN echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
+ RUN \
+  echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  add-apt-repository -y ppa:webupd8team/java && \
+  apt-get update && \
+  apt-get install -y oracle-java7-installer && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /var/cache/oracle-jdk7-installer
 
-# Install java7 + mysql
-RUN apt-get install -qq -y oracle-java7-installer 2> /dev/null
+ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
 
 
 # Set Standard settings
