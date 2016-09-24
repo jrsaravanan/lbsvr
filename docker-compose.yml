@@ -1,28 +1,25 @@
-haproxy:
-  image: tutum/haproxy
-  links:
-    - web1
-    - web2
-  ports:
-    - 80:80
-web2:
-  build: .
-  links:
-   - db:db
-  ports:
-   - "8080"
-web1:
-  build: .
-  links:
-   - db:db
-  ports:
-   - "8080"   
+version: '2'
+services:
+  db:
+   image: mysql:5.6
+   environment:
+     MYSQL_ROOT_PASSWORD: admin
+   ports:
+     - 3309:3306
+   volumes:
+     - ./db-dump:/docker-entrypoint-initdb.d
 
-db:
- image: mysql:5.6
- environment:
-   MYSQL_ROOT_PASSWORD: admin
- ports:
-   - 3309:3306
- volumes:
-   - ./db-dump:/docker-entrypoint-initdb.d
+  web:
+    image: jrsaravanan/lbsvr
+    links:
+      - db:db
+    ports:
+      - "8080"
+  lb:
+    image: dockercloud/haproxy
+    links:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 80:80
